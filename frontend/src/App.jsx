@@ -1,6 +1,7 @@
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import TicketList from "./components/TicketList";
 import CreateTicket from "./pages/CreateTicket";
+import TicketDetail from "./pages/TicketDetail";
 
 function App() {
   const location = useLocation();
@@ -27,6 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<TicketList />} />
           <Route path="/tickets/new" element={<CreateTicket />} />
+          <Route path="/tickets/:ticket_id" element={<TicketDetail />} />
         </Routes>
       </main>
     </div>

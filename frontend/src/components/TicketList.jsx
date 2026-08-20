@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { timeAgo } from "../utils/time";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "";
 
@@ -9,6 +11,7 @@ const STATUS_STYLES = {
 };
 
 export default function TicketList() {
+  const navigate = useNavigate();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,7 +55,11 @@ export default function TicketList() {
         </thead>
         <tbody className="divide-y divide-gray-100 bg-white">
           {tickets.map((ticket) => (
-            <tr key={ticket.ticket_id} className="hover:bg-gray-50">
+            <tr
+              key={ticket.ticket_id}
+              onClick={() => navigate(`/tickets/${ticket.ticket_id}`)}
+              className="cursor-pointer hover:bg-gray-50"
+            >
               <td className="px-4 py-3 font-mono text-gray-800">{ticket.ticket_id}</td>
               <td className="px-4 py-3 text-gray-800">{ticket.customer_name}</td>
               <td className="px-4 py-3 text-gray-800">{ticket.subject}</td>
@@ -65,8 +72,11 @@ export default function TicketList() {
                   {ticket.status}
                 </span>
               </td>
-              <td className="px-4 py-3 text-gray-500">
-                {new Date(ticket.created_at).toLocaleString()}
+              <td
+                className="px-4 py-3 text-gray-500"
+                title={new Date(ticket.created_at).toLocaleString()}
+              >
+                {timeAgo(ticket.created_at)}
               </td>
             </tr>
           ))}
