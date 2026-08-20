@@ -1,5 +1,19 @@
 const Ticket = require('../models/Ticket');
 const generateTicketId = require('../utils/generateTicketId');
+const cloudinary = require('../config/cloudinary');
+
+const uploadImageToCloudinary = (buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'support-tickets' },
+      (err, result) => {
+        if (err) return reject(err);
+        resolve(result.secure_url);
+      }
+    );
+    stream.end(buffer);
+  });
+};
 
 const createTicket = async (req, res) => {
   try {
@@ -7,6 +21,11 @@ const createTicket = async (req, res) => {
 
     if (!customer_name || !customer_email || !subject || !description) {
       return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    let image_url;
+    if (req.file) {
+      image_url = await uploadImageToCloudinary(req.file.buffer);
     }
 
     const ticket_id = await generateTicketId();
@@ -17,6 +36,7 @@ const createTicket = async (req, res) => {
       customer_email,
       subject,
       description,
+      image_url,
     });
 
     res.status(201).json({

@@ -22,6 +22,7 @@ const ticketSchema = new mongoose.Schema(
       enum: ['Open', 'In Progress', 'Closed'],
       default: 'Open',
     },
+    image_url: { type: String },
     notes: [noteSchema],
   },
   {
